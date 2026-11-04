@@ -1,4 +1,24 @@
-const CONFIG = { nombre: "Re Place", perfilUrl: "#PERFIL", perfilTexto: "Síguenos", redes: { facebook: "", instagram: "", tiktok: "" }, ubicacion: { direccion: "", mapaUrl: "", mapaEmbed: "", horario: [], telefono: "", whatsapp: "" } };
+const CONFIG = {
+  nombre: "Re Place",
+  perfilUrl: "#PERFIL",            // enlace de Facebook o Instagram (https://...)
+  perfilTexto: "Síguenos",
+  redes: { facebook: "", instagram: "", tiktok: "" },
+  ubicacion: {
+    // Datos tomados de Google Maps (ficha "The Place Snack & Bar").
+    direccion: "Plan de Ayala, Emiliano Zapata, 75985 Coxcatlán, Pue.",
+    plusCode: "7R8V+QH Coxcatlán, Puebla",
+    mapaUrl: "https://maps.google.com/?cid=2741798534621190273",
+    mapaEmbed: "https://maps.google.com/maps?q=18.2669423,-97.1560016&z=17&output=embed",
+    horario: [],                   // ej. [["Lunes a jueves", "1:00 pm – 11:00 pm"]]
+    telefono: "",
+    whatsapp: ""
+  },
+  resena: { calificacion: "4.3", total: 16, url: "https://maps.google.com/?cid=2741798534621190273" }
+};
+
+// Seguridad: solo se permiten enlaces https, tel: o anclas internas (#).
+const safeUrl = url => /^(https:\/\/|tel:|#)/i.test(String(url || "").trim()) ? String(url).trim() : "#";
+const isMapEmbed = url => /^https:\/\/(www\.google\.com|maps\.google\.com)\/maps/i.test(String(url || ""));
 
 // Cada producto: nombre, precio (o variantes), descripción opcional.
 const items = (rows) => rows.map(([nombre, precio, descripcion = ""]) => ({ nombre, precio, descripcion }));
@@ -23,9 +43,9 @@ const MENU = [
 
 document.querySelectorAll("[data-name]").forEach(el => { el.textContent = CONFIG.nombre; });
 document.querySelectorAll("[data-profile]").forEach(el => {
-  el.setAttribute("href", el.classList.contains("floating-profile") ? CONFIG.redes.instagram || CONFIG.perfilUrl : CONFIG.perfilUrl);
+  el.setAttribute("href", safeUrl(el.classList.contains("floating-profile") ? CONFIG.redes.instagram || CONFIG.perfilUrl : CONFIG.perfilUrl));
   el.target = "_blank";
-  el.rel = "noopener";
+  el.rel = "noopener noreferrer";
 });
 document.querySelectorAll("[data-profile-text]").forEach(el => { el.textContent = CONFIG.perfilTexto; });
 document.title = `${CONFIG.nombre} | Menú`;
@@ -90,7 +110,7 @@ const productsOf = c => c.grupos.flatMap(g => g.productos);
 const pricesOf = p => Array.isArray(p.precio) ? p.precio.map(v => v.precio) : [p.precio];
 const escapeHTML = text => String(text).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const ext = (url, label, cls = "") => {
- const a = document.createElement("a"); a.href = url; a.textContent = label; a.className = cls; a.target = "_blank"; a.rel = "noopener"; return a;
+ const a = document.createElement("a"); a.href = safeUrl(url); a.textContent = label; a.className = cls; a.target = "_blank"; a.rel = "noopener noreferrer"; return a;
 };
 MENU.forEach((c, i) => {
  const a = document.createElement("a"); a.href = "#" + c.id; a.className = "explore-tile";
@@ -127,6 +147,7 @@ function infoCard(title) { const a=document.createElement("article"), h=document
 if (place.direccion || place.mapaUrl) {
  const card=infoCard("Ubicación");
  if(place.direccion) { para(card,place.direccion); para(footerPlace,place.direccion); }
+ if(place.plusCode) para(card,"Plus Code: "+place.plusCode);
  if(place.mapaUrl) card.append(ext(place.mapaUrl,"Cómo llegar ↗"));
 }
 if(place.horario.length) {
@@ -140,8 +161,9 @@ if(place.telefono || place.whatsapp) {
 }
 if(!place.direccion && !place.horario.length && !place.telefono && !place.whatsapp) infoCard("¿Dónde estamos? Te lo contamos en redes.").append(ext(CONFIG.perfilUrl,CONFIG.perfilTexto,"button"));
 if(!place.direccion && !place.horario.length && !place.telefono) para(footerPlace,"Síguenos para saber dónde estamos.");
-if(place.mapaEmbed) {const map=document.createElement("iframe");map.src=place.mapaEmbed;map.loading="lazy";map.title="Mapa de Re Place";map.referrerPolicy="no-referrer-when-downgrade";map.width="600";map.height="350";info.append(map);}
+if(isMapEmbed(place.mapaEmbed)) {const map=document.createElement("iframe");map.src=place.mapaEmbed;map.loading="lazy";map.title="Mapa de Re Place";map.referrerPolicy="strict-origin-when-cross-origin";map.setAttribute("sandbox","allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox");map.width="600";map.height="350";map.className="map-embed";info.append(map);}
 document.getElementById("about-stats").innerHTML = [MENU.reduce((n,c)=>n+productsOf(c).length,0)+" productos",new Set(MENU.flatMap(c=>c.salsas || [])).size+" salsas",MENU.length+" categorías"].map(t=>"<span>"+escapeHTML(t)+"</span>").join("");
+if (CONFIG.resena && CONFIG.resena.calificacion) { const r = ext(CONFIG.resena.url, "★ " + CONFIG.resena.calificacion + " en Google Maps (" + CONFIG.resena.total + " reseñas)", "rating-chip"); document.getElementById("about-stats").append(r); }
 const icons = {
  facebook:'<path d="M14 21v-8h3l.5-4H14V7c0-1 .3-2 2-2h2V1.5L15 1c-3 0-5 2-5 5v3H7v4h3v8z"/>',
  instagram:'<rect x="3" y="3" width="18" height="18" rx="5" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="17.5" cy="6.5" r="1"/>',

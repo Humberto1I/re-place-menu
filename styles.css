@@ -167,3 +167,6 @@ footer .social-icon{width:44px;height:44px;border:1.5px solid var(--maroon);bord
 @media(prefers-reduced-motion:reduce){.explore-tile:hover,.explore-tile:focus-visible,.explore-tile:hover img,.explore-tile:focus-visible img{transform:none}}
 
 .carousel-track::-webkit-scrollbar{display:none}
+/* Calificación de Google Maps (enlace en Conócenos) */
+.rating-chip{display:inline-flex;align-items:center;min-height:44px;padding:0 16px;border-radius:999px;background:var(--maroon);color:var(--yellow);font-size:12px;font-weight:700;text-decoration:none;border:1.5px solid var(--maroon)}
+.rating-chip:hover,.rating-chip:focus-visible{background:var(--yellow);color:var(--maroon)}

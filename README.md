@@ -61,3 +61,19 @@ Fotos de Unsplash, bajo Unsplash License. Los siguientes son identificadores de 
 - Coctelería: https://images.unsplash.com/photo-1596392301391-e8622b210bd4
 - Mojitos: https://images.unsplash.com/photo-1653542772393-71ffa417b1c4
 
+
+## Datos del negocio
+La dirección, el Plus Code, el mapa y la calificación vienen de la ficha de Google Maps
+"The Place Snack & Bar" (Coxcatlán, Puebla). La ficha no tiene teléfono, horario ni sitio web;
+cuando los tengas, agrégalos en `CONFIG.ubicacion` (`horario`, `telefono`, `whatsapp`).
+
+## Seguridad
+- **Content-Security-Policy** (en `index.html`): solo se ejecutan scripts propios del sitio
+  (`boot.js`, `loader.js`, `script.js`); estilos y fuentes solo de este sitio y de Google Fonts;
+  el único iframe permitido es el mapa de Google. No se permiten formularios, plugins ni `<base>`.
+- **Sin scripts en línea**: por eso la pantalla de carga vive en `loader.js`.
+- **Enlaces validados**: `safeUrl()` solo acepta `https://`, `tel:` o `#`; cualquier otro
+  (por ejemplo `javascript:`) se cambia por `#`. Los enlaces externos usan `noopener noreferrer`.
+- **Mapa aislado**: el iframe usa `sandbox` y solo se muestra si la URL es de Google Maps.
+- **Política de referencia** `strict-origin-when-cross-origin`.
+- Los textos de `CONFIG` se insertan como texto (no como HTML).
