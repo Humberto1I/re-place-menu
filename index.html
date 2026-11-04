@@ -50,6 +50,7 @@
   <a class="skip-link" href="#menu">Saltar al menú</a>
   <header class="topbar">
     <a class="brand" href="#inicio" aria-label="Ir al inicio"><span class="logo-re">RE</span><span class="logo-place">PLACE</span></a>
+    <nav class="header-nav" aria-label="Navegación principal"><a href="#explora">Carta</a><a href="#imperdibles">Imperdibles</a><a href="#menu">Menú</a><a href="#conocenos">Conócenos</a></nav>
     <a class="profile header-profile" data-profile href="#PERFIL" target="_blank" rel="noopener"><span data-profile-text>Síguenos</span> <span aria-hidden="true">↗</span></a>
   </header>
   <main>
@@ -67,6 +68,8 @@
       <div class="hero-bottom"><span>RE-SABROSO · RE-LLENADOR · RE-FRESCANTE</span><a href="#menu">VER EL MENÚ ↓</a></div>
     </section>
     <div class="marquee" aria-label="Todas las burgers llevan papas. Alitas con 12 salsas. Precios en pesos mexicanos."><div class="marquee-track" aria-hidden="true"><span>RE-SABROSO ✳ TODAS LAS BURGERS LLEVAN PAPAS ✳ 12 SALSAS PARA TUS ALITAS ✳ LITROS DESDE $110 ✳ RE-LLENADOR ✳ RE PLACE ✳ </span><span>RE-SABROSO ✳ TODAS LAS BURGERS LLEVAN PAPAS ✳ 12 SALSAS PARA TUS ALITAS ✳ LITROS DESDE $110 ✳ RE-LLENADOR ✳ RE PLACE ✳ </span></div></div>
+    <section class="discovery" id="explora" aria-labelledby="explora-title"><p class="eyebrow">ELIGE TU ANTOJO</p><h2 id="explora-title">EXPLORA LA CARTA</h2><div class="explore-grid" id="explore-grid"></div></section>
+    <section class="discovery" id="imperdibles" aria-roledescription="carrusel" aria-labelledby="imperdibles-title"><p class="eyebrow">SI ES TU PRIMERA VEZ</p><h2 id="imperdibles-title">LOS IMPERDIBLES DE RE PLACE</h2><div class="carousel-track" id="carousel-track" tabindex="0" aria-label="Productos imperdibles"></div><div class="carousel-controls"><button type="button" id="carousel-prev" aria-label="Anterior">←</button><div class="carousel-dots" id="carousel-dots" aria-label="Elegir diapositiva"></div><button type="button" id="carousel-next" aria-label="Siguiente">→</button><button type="button" id="carousel-pause" aria-label="Pausar reproducción automática">Pausar</button></div></section>
     <nav class="category-nav" aria-label="Categorías del menú"><div class="tabs" id="tabs"></div></nav>
     <div class="menu-shell" id="menu">
       <div class="menu-intro"><div><p class="eyebrow">LA CARTA DE RE PLACE</p><h2>¿QUÉ SE TE RE-ANTOJA HOY?</h2></div><div class="search-wrap"><label for="search">Busca tu antojo</label><div class="search-field"><span aria-hidden="true">⌕</span><input id="search" type="search" placeholder="Busca en el menú…" autocomplete="off"></div></div></div>
@@ -75,10 +78,11 @@
       <div id="categories"></div>
       <p id="empty-state" hidden>Ese antojo no está en Re Place (todavía). Prueba con “papas”, “alitas” o “mojito”.</p>
       <noscript><p>Activa JavaScript para consultar los productos y precios de nuestro menú.</p></noscript>
+      <section id="conocenos" class="about" aria-labelledby="conocenos-title"><div><p class="eyebrow">CONÓCENOS</p><h2 id="conocenos-title">UN LUGAR PARA RE-GRESAR</h2><p>Re Place nació con una idea sencilla: que salgas con ganas de volver. Por eso todas las burgers llevan papas, las alitas tienen 12 salsas para elegir y los litros se sirven bien servidos. Ven con hambre, sal con planes de regresar.</p><div id="about-stats" class="stat-chips"></div></div><div id="location-info" class="location-info"></div></section>
       <aside class="social-banner"><span class="social-star" aria-hidden="true">✳</span><div><p class="eyebrow">NO TE QUEDES CON EL ANTOJO</p><h2>LO BUENO SE RE-PITE.</h2><p>Síguenos y entérate primero de lo nuevo en Re Place.</p></div><a class="button" data-profile href="#PERFIL" target="_blank" rel="noopener">Ver nuestro perfil <span aria-hidden="true">↗</span></a></aside>
     </div>
   </main>
-  <footer><span class="brand footer-brand" aria-label="Re Place"><span class="logo-re">RE</span><span class="logo-place">PLACE</span></span><p>Re Place — el lugar al que siempre re-gresas.</p><span>© 2026 Re Place</span><a data-profile href="#PERFIL" target="_blank" rel="noopener"><span data-profile-text>Síguenos</span> ↗</a><small>Fotos: Unsplash</small></footer>
+  <footer><div class="footer-grid"><div><span class="brand footer-brand" aria-label="Re Place"><span class="logo-re">RE</span><span class="logo-place">PLACE</span></span><p>Re Place — el lugar al que siempre re-gresas.</p><small>Precios en MXN.</small></div><div><h2>La carta</h2><nav id="footer-categories" aria-label="La carta"></nav></div><div><h2>Visítanos</h2><div id="footer-location"></div></div><div><h2>Síguenos</h2><div id="footer-socials" class="footer-socials"></div></div></div><div class="footer-bottom"><span>© 2026 Re Place</span><small>Fotos: Unsplash</small><button type="button" id="back-top">Volver arriba ↑</button></div></footer>
   <a class="floating-profile" data-profile href="#PERFIL" target="_blank" rel="noopener" aria-label="Visítanos en redes (abre una pestaña nueva)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r=".8" fill="currentColor" stroke="none"/></svg></a>
 </body>
 </html>

@@ -1,4 +1,4 @@
-const CONFIG = { nombre: "Re Place", perfilUrl: "#PERFIL", perfilTexto: "Síguenos" };
+const CONFIG = { nombre: "Re Place", perfilUrl: "#PERFIL", perfilTexto: "Síguenos", redes: { facebook: "", instagram: "", tiktok: "" }, ubicacion: { direccion: "", mapaUrl: "", mapaEmbed: "", horario: [], telefono: "", whatsapp: "" } };
 
 // Cada producto: nombre, precio (o variantes), descripción opcional.
 const items = (rows) => rows.map(([nombre, precio, descripcion = ""]) => ({ nombre, precio, descripcion }));
@@ -23,7 +23,7 @@ const MENU = [
 
 document.querySelectorAll("[data-name]").forEach(el => { el.textContent = CONFIG.nombre; });
 document.querySelectorAll("[data-profile]").forEach(el => {
-  el.setAttribute("href", CONFIG.perfilUrl);
+  el.setAttribute("href", el.classList.contains("floating-profile") ? CONFIG.redes.instagram || CONFIG.perfilUrl : CONFIG.perfilUrl);
   el.target = "_blank";
   el.rel = "noopener";
 });
@@ -86,6 +86,70 @@ MENU.forEach((category, index) => {
   categories.append(section);
 });
 
+const productsOf = c => c.grupos.flatMap(g => g.productos);
+const pricesOf = p => Array.isArray(p.precio) ? p.precio.map(v => v.precio) : [p.precio];
+const escapeHTML = text => String(text).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const ext = (url, label, cls = "") => {
+ const a = document.createElement("a"); a.href = url; a.textContent = label; a.className = cls; a.target = "_blank"; a.rel = "noopener"; return a;
+};
+MENU.forEach((c, i) => {
+ const a = document.createElement("a"); a.href = "#" + c.id; a.className = "explore-tile";
+ a.style.setProperty("--delay", (i % 4 * 65) + "ms");
+ a.innerHTML = photoHTML(c.imagen, "Selección de " + c.titulo + " de Re Place", c.emoji, "tile-photo") + '<div class="tile-caption"><h3>' + c.titulo + '</h3><p>' + productsOf(c).length + ' opciones · desde $' + Math.min(...productsOf(c).flatMap(pricesOf)) + '</p></div>';
+ document.getElementById("explore-grid").append(a);
+ const link = document.createElement("a"); link.href = "#" + c.id; link.textContent = c.titulo; document.getElementById("footer-categories").append(link);
+});
+const picks = [
+ ["snacks","Combinado Snack","","Papas gajo, a la francesa, nuggets, aros y salchipulpos. Para la mesa entera."],
+ ["alitas","20 piezas","Alitas · 20 piezas","Arma tu combinación con nuestras 12 salsas."],
+ ["hamburguesas","Guacamole","Burger Guacamole","Con sus papas, como todas."],
+ ["nachos","Nachos Especiales","","Crujientes, con queso y todo lo bueno encima."],
+ ["hot-dogs","Texan","Hot Dog Texan","Aros de cebolla y BBQ arriba de la salchicha."],
+ ["cocteleria","Piña Colada","","Medio litro o litro: tú eliges el tamaño del plan.","Litro"]
+].flatMap(([id,name,title,line,variant]) => {
+ const c = MENU.find(c => c.id === id), p = c && productsOf(c).find(p => normalize(p.nombre) === normalize(name));
+ if (!p) return [];
+ const price = variant ? (Array.isArray(p.precio) ? p.precio.find(v => normalize(v.tamano) === normalize(variant))?.precio : undefined) : Math.min(...pricesOf(p));
+ return Number.isFinite(price) ? [{c,title:title || name,line,price,variant}] : [];
+});
+const track = document.getElementById("carousel-track");
+picks.forEach((p,i) => {
+ const slide = document.createElement("article"); slide.className = "pick-slide";
+ slide.setAttribute("role","group"); slide.setAttribute("aria-roledescription","diapositiva"); slide.setAttribute("aria-label",(i+1)+" de "+picks.length);
+ slide.innerHTML = photoHTML(p.c.imagen,p.title+" de Re Place",p.c.emoji,"pick-photo") + '<div class="pick-content"><h3>'+p.title+'</h3><p>'+p.line+'</p><span class="pick-price">$'+p.price+(p.variant?'<small>'+p.variant+'</small>':'')+'</span><a href="#'+p.c.id+'">Verlo en el menú ↓</a></div>';
+ track.append(slide);
+ const dot = document.createElement("button"); dot.type="button"; dot.setAttribute("aria-label","Ir a diapositiva "+(i+1)); dot.addEventListener("click",()=>goToSlide(i)); document.getElementById("carousel-dots").append(dot);
+});
+if (!picks.length) document.getElementById("imperdibles").hidden = true;
+const place = CONFIG.ubicacion, info = document.getElementById("location-info"), footerPlace = document.getElementById("footer-location");
+function para(parent,text) { const p = document.createElement("p"); p.textContent=text; parent.append(p); }
+function infoCard(title) { const a=document.createElement("article"), h=document.createElement("h3"); a.className="info-card"; h.textContent=title; a.append(h); info.append(a); return a; }
+if (place.direccion || place.mapaUrl) {
+ const card=infoCard("Ubicación");
+ if(place.direccion) { para(card,place.direccion); para(footerPlace,place.direccion); }
+ if(place.mapaUrl) card.append(ext(place.mapaUrl,"Cómo llegar ↗"));
+}
+if(place.horario.length) {
+ const card=infoCard("Horario"), list=document.createElement("dl"); card.append(list);
+ place.horario.forEach(([days,hours])=>{const dt=document.createElement("dt"),dd=document.createElement("dd");dt.textContent=days;dd.textContent=hours;list.append(dt,dd);para(footerPlace,days+": "+hours);});
+}
+if(place.telefono || place.whatsapp) {
+ const card=infoCard("Contacto");
+ if(place.telefono) {const a=document.createElement("a");a.href="tel:"+place.telefono.replace(/[^+\d]/g,"");a.textContent=place.telefono;card.append(a);footerPlace.append(a.cloneNode(true));}
+ if(place.whatsapp) card.append(ext("https://wa.me/"+place.whatsapp.replace(/\D/g,""),"Escríbenos por WhatsApp"));
+}
+if(!place.direccion && !place.horario.length && !place.telefono && !place.whatsapp) infoCard("¿Dónde estamos? Te lo contamos en redes.").append(ext(CONFIG.perfilUrl,CONFIG.perfilTexto,"button"));
+if(!place.direccion && !place.horario.length && !place.telefono) para(footerPlace,"Síguenos para saber dónde estamos.");
+if(place.mapaEmbed) {const map=document.createElement("iframe");map.src=place.mapaEmbed;map.loading="lazy";map.title="Mapa de Re Place";map.referrerPolicy="no-referrer-when-downgrade";map.width="600";map.height="350";info.append(map);}
+document.getElementById("about-stats").innerHTML = [MENU.reduce((n,c)=>n+productsOf(c).length,0)+" productos",new Set(MENU.flatMap(c=>c.salsas || [])).size+" salsas",MENU.length+" categorías"].map(t=>"<span>"+escapeHTML(t)+"</span>").join("");
+const icons = {
+ facebook:'<path d="M14 21v-8h3l.5-4H14V7c0-1 .3-2 2-2h2V1.5L15 1c-3 0-5 2-5 5v3H7v4h3v8z"/>',
+ instagram:'<rect x="3" y="3" width="18" height="18" rx="5" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="17.5" cy="6.5" r="1"/>',
+ tiktok:'<path d="M14 2h3c0 3 2 5 5 5v3a9 9 0 0 1-5-2v9a6 6 0 1 1-6-6v3a3 3 0 1 0 3 3z"/>'
+};
+Object.entries(CONFIG.redes).forEach(([name,url])=>{if(!url || !icons[name])return;const a=ext(url,"","social-icon");a.setAttribute("aria-label","Re Place en "+({facebook:"Facebook",instagram:"Instagram",tiktok:"TikTok"}[name]));a.innerHTML='<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">'+icons[name]+'</svg>';document.getElementById("footer-socials").append(a);});
+if(!document.getElementById("footer-socials").children.length)document.getElementById("footer-socials").append(ext(CONFIG.perfilUrl,CONFIG.perfilTexto));
+
 const sections = [...document.querySelectorAll(".menu-section")];
 const cards = [...document.querySelectorAll(".menu-card")];
 const motion = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -94,7 +158,7 @@ if ("IntersectionObserver" in window) {
   revealObserver = new IntersectionObserver(entries => entries.forEach(entry => {
     if (entry.isIntersecting) { entry.target.classList.add("visible"); revealObserver.unobserve(entry.target); }
   }), { threshold: 0.08 });
-  cards.forEach(card => { card.classList.add("reveal"); revealObserver.observe(card); });
+  [...cards, ...document.querySelectorAll(".explore-tile, .about")].forEach(card => { card.classList.add("reveal"); revealObserver.observe(card); });
   const sectionObserver = new IntersectionObserver(entries => {
     const visible = entries.filter(entry => entry.isIntersecting && !entry.target.hidden).sort((a,b) => a.boundingClientRect.top - b.boundingClientRect.top);
     if (visible.length) activate(visible[0].target.id);
@@ -190,5 +254,58 @@ window.addEventListener("offline", () => { offlineToast.hidden = false; });
 window.addEventListener("online", () => { offlineToast.hidden = true; });
 offlineToast.querySelector("button").addEventListener("click", () => { offlineToast.hidden = true; });
 if (navigator.onLine === false) offlineToast.hidden = false;
+
+function smoothScroll(target) {
+ const offset = document.querySelector(".category-nav").getBoundingClientRect().height + 16;
+ window.scrollTo({top:target ? Math.max(0,target.getBoundingClientRect().top+window.scrollY-offset):0,behavior:motion.matches?"instant":"smooth"});
+}
+document.addEventListener("click", event => {
+ const a=event.target.closest('a[href^="#"]');
+ if(!a || a.target==="_blank" || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey)return;
+ const target=document.getElementById(a.getAttribute("href").slice(1));
+ if(!target)return;
+ event.preventDefault();smoothScroll(target);history.replaceState(null,"",a.getAttribute("href"));
+ target.setAttribute("tabindex","-1");target.focus({preventScroll:true});
+});
+document.getElementById("back-top").addEventListener("click",()=>{smoothScroll(null);document.querySelector(".topbar .brand").focus({preventScroll:true});});
+const carousel=document.getElementById("imperdibles"), slides=[...track.children], dots=[...document.getElementById("carousel-dots").children];
+let currentSlide=0,carouselTimer,carouselVisible=false,touching=false,userPaused=false;
+function goToSlide(index) {
+ if(!slides.length)return;
+ const next=(index+slides.length)%slides.length;
+ track.scrollTo({left:slides[next].offsetLeft-slides[0].offsetLeft,behavior:motion.matches?"instant":"smooth"});
+}
+function reflectSlide() {
+ if(!slides.length)return;
+ currentSlide=slides.reduce((best,s,i)=>Math.abs(s.offsetLeft-slides[0].offsetLeft-track.scrollLeft)<Math.abs(slides[best].offsetLeft-slides[0].offsetLeft-track.scrollLeft)?i:best,0);
+ dots.forEach((d,i)=>{if(i===currentSlide)d.setAttribute("aria-current","true");else d.removeAttribute("aria-current");});
+}
+function syncAutoplay() {
+ clearInterval(carouselTimer);
+ if(slides.length<2 || motion.matches || userPaused || touching || document.hidden || !carouselVisible || carousel.matches(":hover") || carousel.contains(document.activeElement))return;
+ carouselTimer=setInterval(()=>goToSlide(currentSlide+1),5000);
+}
+track.addEventListener("scroll",reflectSlide,{passive:true});
+window.addEventListener("resize",reflectSlide);
+document.getElementById("carousel-prev").addEventListener("click",()=>goToSlide(currentSlide-1));
+document.getElementById("carousel-next").addEventListener("click",()=>goToSlide(currentSlide+1));
+const pauseButton=document.getElementById("carousel-pause");
+pauseButton.addEventListener("click",()=>{
+ userPaused=!userPaused;pauseButton.textContent=userPaused?"Reanudar":"Pausar";
+ pauseButton.setAttribute("aria-label",userPaused?"Reanudar reproducción automática":"Pausar reproducción automática");syncAutoplay();
+});
+carousel.addEventListener("mouseenter",syncAutoplay);
+carousel.addEventListener("mouseleave",syncAutoplay);
+carousel.addEventListener("focusin",syncAutoplay);
+carousel.addEventListener("focusout",()=>requestAnimationFrame(syncAutoplay));
+carousel.addEventListener("touchstart",()=>{touching=true;syncAutoplay();},{passive:true});
+["touchend","touchcancel"].forEach(type=>carousel.addEventListener(type,()=>{touching=false;syncAutoplay();},{passive:true}));
+document.addEventListener("visibilitychange",syncAutoplay);
+motion.addEventListener("change",syncAutoplay);
+if("IntersectionObserver" in window) {
+ const observer=new IntersectionObserver(entries=>{carouselVisible=entries[0].isIntersecting;syncAutoplay();},{threshold:0.2});observer.observe(carousel);
+}
+reflectSlide();
+
 
 
