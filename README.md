@@ -77,3 +77,14 @@ cuando los tengas, agrégalos en `CONFIG.ubicacion` (`horario`, `telefono`, `wha
 - **Mapa aislado**: el iframe usa `sandbox` y solo se muestra si la URL es de Google Maps.
 - **Política de referencia** `strict-origin-when-cross-origin`.
 - Los textos de `CONFIG` se insertan como texto (no como HTML).
+## Publicar en Netlify
+
+El sitio es estático: no requiere compilación. `netlify.toml` publica la carpeta raíz. El archivo `_headers`, compatible también con Cloudflare Pages, añade cabeceras HTTP reales de seguridad: CSP con `frame-ancestors`, `nosniff`, X-Frame-Options, HSTS, Permissions-Policy y COOP, además de las reglas de caché.
+
+```sh
+npx netlify-cli login
+npx netlify-cli deploy --prod --dir . --site <nombre-del-sitio>
+```
+
+El `<meta http-equiv="Content-Security-Policy">` de `index.html` se conserva como respaldo para alojamientos que no pueden enviar estas cabeceras, como GitHub Pages.
+
