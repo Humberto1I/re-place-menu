@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="es-MX">
+<head>
+  <meta charset="utf-8">
+<script>document.documentElement.classList.add('js')</script>
+<link rel="preload" as="image" href="img/hero.webp">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23ffd23f'/%3E%3Ctext x='32' y='44' text-anchor='middle' font-family='Arial' font-size='34' font-weight='900' fill='%234a0d1a'%3ERE%3C/text%3E%3C/svg%3E">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Re Place — el lugar al que siempre re-gresas. Burgers con papas, alitas con 12 salsas y litros bien servidos. Precios en MXN.">
+  <meta property="og:title" content="Re Place | Menú">
+  <meta property="og:description" content="Re Place: burgers con papas, alitas con 12 salsas y litros bien servidos. Aquí todo se te antoja dos veces.">
+  <meta property="og:site_name" content="Re Place">
+  <meta property="og:image" content="img/hero.webp">
+  <meta property="og:image:alt" content="Hamburguesa con queso y vegetales">
+<meta property="og:type" content="website">
+  <meta property="og:locale" content="es_MX">
+  <meta name="theme-color" content="#e8345a">
+  <title>Re Place | Menú</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <script src="script.js" defer></script>
+</head>
+<body>
+<div class="loader" id="loader" role="status" aria-live="polite">
+<div class="brand loader-logo" aria-label="Re Place"><span class="logo-re">RE</span><span class="logo-place">PLACE</span></div>
+<div class="burger-stack" aria-hidden="true"><i class="bun-top"></i><i class="cheese"></i><i class="patty"></i><i class="lettuce"></i><i class="bun-bottom"></i></div>
+<div class="loader-progress" aria-hidden="true"><span></span></div>
+<p id="loader-text">Calentando la plancha…</p></div>
+<script>
+// El cierre funciona aunque falle el script del menú.
+(() => {
+ const start = performance.now(), loader = document.getElementById('loader');
+ let done = false;
+ document.documentElement.classList.add('loading');
+ const finish = () => {
+  if (done) return;
+  done = true;
+  document.documentElement.classList.remove('loading');
+  loader.classList.add('loader-done');
+  setTimeout(() => { loader.hidden = true; }, 350);
+ };
+ window.addEventListener('load', () => setTimeout(finish, Math.max(0, 600 - (performance.now() - start))), { once: true });
+ setTimeout(() => { if (!done) document.getElementById('loader-text').textContent = 'Ya casi… la plancha está re-caliente'; }, 4000);
+ setTimeout(finish, 5600);
+})();
+</script>
+<div class="offline-toast" id="offline-toast" role="status" hidden><p>Sin conexión: el menú sigue aquí, algunas fotos podrían no cargar.</p><button type="button" aria-label="Cerrar aviso de conexión">×</button></div>
+  <a class="skip-link" href="#menu">Saltar al menú</a>
+  <header class="topbar">
+    <a class="brand" href="#inicio" aria-label="Ir al inicio"><span class="logo-re">RE</span><span class="logo-place">PLACE</span></a>
+    <a class="profile header-profile" data-profile href="#PERFIL" target="_blank" rel="noopener"><span data-profile-text>Síguenos</span> <span aria-hidden="true">↗</span></a>
+  </header>
+  <main>
+    <section class="hero" id="inicio" aria-labelledby="hero-title">
+      <div class="hero-food" aria-hidden="true"><span>🍔</span><span>🌭</span><span>🌮</span><span>🍟</span><span>🍗</span><span>🧀</span><span>🍹</span></div>
+      <div class="hero-content">
+        <p class="eyebrow"><span></span> BURGERS · HOT DOGS · ALITAS · DRINKS</p>
+        <h1 id="hero-title">RE PLACE<span class="hero-tagline">el lugar al que siempre <span class="nowrap">re-gresas</span></span></h1>
+        <p class="hero-description">Burgers que llevan papas (todas), alitas con 12 salsas y litros bien servidos. Aquí todo se te antoja dos veces.</p>
+        <a class="button" data-profile href="#PERFIL" target="_blank" rel="noopener">Síguenos en redes <span aria-hidden="true">↗</span></a>
+        <p class="hero-note">Re-sabroso desde el primer bocado.</p>
+      </div>
+      <div class="hero-photo photo-frame" data-emoji="🍔"><img src="img/hero.webp" alt="Hamburguesa con queso, carne y vegetales en pan dorado" width="960" height="1200" fetchpriority="high" decoding="async"></div>
+      <div class="hero-stamp" aria-hidden="true">LO BUENO SE<br><strong>RE-PITE</strong><span>★ ★ ★</span></div>
+      <div class="hero-bottom"><span>RE-SABROSO · RE-LLENADOR · RE-FRESCANTE</span><a href="#menu">VER EL MENÚ ↓</a></div>
+    </section>
+    <div class="marquee" aria-label="Todas las burgers llevan papas. Alitas con 12 salsas. Precios en pesos mexicanos."><div class="marquee-track" aria-hidden="true"><span>RE-SABROSO ✳ TODAS LAS BURGERS LLEVAN PAPAS ✳ 12 SALSAS PARA TUS ALITAS ✳ LITROS DESDE $110 ✳ RE-LLENADOR ✳ RE PLACE ✳ </span><span>RE-SABROSO ✳ TODAS LAS BURGERS LLEVAN PAPAS ✳ 12 SALSAS PARA TUS ALITAS ✳ LITROS DESDE $110 ✳ RE-LLENADOR ✳ RE PLACE ✳ </span></div></div>
+    <nav class="category-nav" aria-label="Categorías del menú"><div class="tabs" id="tabs"></div></nav>
+    <div class="menu-shell" id="menu">
+      <div class="menu-intro"><div><p class="eyebrow">LA CARTA DE RE PLACE</p><h2>¿QUÉ SE TE RE-ANTOJA HOY?</h2></div><div class="search-wrap"><label for="search">Busca tu antojo</label><div class="search-field"><span aria-hidden="true">⌕</span><input id="search" type="search" placeholder="Busca en el menú…" autocomplete="off"></div></div></div>
+      <p class="currency-note">PRECIOS EN PESOS MEXICANOS · MXN</p>
+      <p id="search-status" class="search-status" role="status" aria-live="polite"></p>
+      <div id="categories"></div>
+      <p id="empty-state" hidden>Ese antojo no está en Re Place (todavía). Prueba con “papas”, “alitas” o “mojito”.</p>
+      <noscript><p>Activa JavaScript para consultar los productos y precios de nuestro menú.</p></noscript>
+      <aside class="social-banner"><span class="social-star" aria-hidden="true">✳</span><div><p class="eyebrow">NO TE QUEDES CON EL ANTOJO</p><h2>LO BUENO SE RE-PITE.</h2><p>Síguenos y entérate primero de lo nuevo en Re Place.</p></div><a class="button" data-profile href="#PERFIL" target="_blank" rel="noopener">Ver nuestro perfil <span aria-hidden="true">↗</span></a></aside>
+    </div>
+  </main>
+  <footer><span class="brand footer-brand" aria-label="Re Place"><span class="logo-re">RE</span><span class="logo-place">PLACE</span></span><p>Re Place — el lugar al que siempre re-gresas.</p><span>© 2026 Re Place</span><a data-profile href="#PERFIL" target="_blank" rel="noopener"><span data-profile-text>Síguenos</span> ↗</a><small>Fotos: Unsplash</small></footer>
+  <a class="floating-profile" data-profile href="#PERFIL" target="_blank" rel="noopener" aria-label="Visítanos en redes (abre una pestaña nueva)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r=".8" fill="currentColor" stroke="none"/></svg></a>
+</body>
+</html>
